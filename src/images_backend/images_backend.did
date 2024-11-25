@@ -1,3 +1,29 @@
+// File identifier type (blob of length 32 representing SHA-256 hash)
+type FileId = blob;
+
+// Custom types for the interface
+type Metadata = record {
+    file_size : nat32;
+    mime_type : text;
+    chunks : vec nat64;
+};
+
+// Result types for the functions
+type UploadResult = variant {
+    Ok : FileId;
+    Err : text;
+};
+
+type DownloadResult = variant {
+    Ok : record { text; blob; };
+    Err : text;
+};
+
 service : {
-    "greet": (text) -> (text) query;
+    // Upload a new file with its MIME type
+    "upload_file" : (file : blob, mime_type : text) -> (UploadResult);
+    
+    // Retrieve a file by its ID
+    "get_file" : (file_id_hex : text) -> (DownloadResult) query;
+    "get_image_count" : () -> (nat64) query;
 }
